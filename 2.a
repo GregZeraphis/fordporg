@@ -1,15 +1,22 @@
+2.a
+Irj olyan assembly programot, ami beolvas, majd letarol 12 szamot.
+Ezt kovetoen kiirja a paros szamok osszeget, majd a paratlan szamokat visszafele a beolvasastol szamitva.
+
+
 extern ki_egesz
 extern be_egesz
 
 section .bss
-	T : resb 48
+	T : resb 48	//a 12 szam helye
 
 section .data
-	C : DD 0
-	D : DD 0	
+	C : DD 0	//paros szamok osszege
+	D : DD 0	//paratlan szamok szama
 
 section .text
 main:
+
+//szamok beolvasasa T memoriateruletre
 	mov ECX,0
 ciklus_eleje:
 	cmp ECX,12
@@ -22,6 +29,7 @@ ciklus_eleje:
 	jmp ciklus_eleje
 ciklus_vege:
 
+//T memoriaterulet feldolgozasa
 	mov ECX,0
 ciklus2_eleje:
 	cmp ECX,12
@@ -30,16 +38,21 @@ ciklus2_eleje:
 	DIV 2
 	cmp EDX,0
 	jne nem_paros
-	add C,DWORD[T+4*ECX]
+	add C,DWORD[T+4*ECX] 	//parosak osszeadasa C-be
 	jmp felt_vege
 	nem_paros:
-	push DWORD[T+4*ECX]
+	push DWORD[T+4*ECX]	//paratlanok stackre dobasa
 	inc D
 	felt_vege:
 	inc ECX
 	jmp ciklus2_eleje
 ciklus2_vege:
+
+//paros szamok osszegenek kiirasa
+	mov EAX, C
+	call ki_egesz
 	
+//paratlan szamok kiolvasasa stackrol ciklussal
 	mov ECX, 0
 ciklus3_eleje:
 	cmp ECX, D
